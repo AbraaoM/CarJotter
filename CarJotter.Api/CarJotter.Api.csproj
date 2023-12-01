@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarJotter.Core\CarJotter.Core.csproj" />
+    <ProjectReference Include="..\CarJotter.Application\CarJotter.Application.csproj" />
+    <ProjectReference Include="..\CarJotter.Infrastructure\CarJotter.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
