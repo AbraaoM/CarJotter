@@ -10,6 +10,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<CarEntity> Cars { get; set; } = null!;
+    public DbSet<ProcedureEntity> Procedures { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
