@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using CarJotter.Application.DTOs;
 using CarJotter.Application.Commands;
+using CarJotter.Application.Queries;
 using CarJotter.Core.Interfaces.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using CarJotter.Core.Entities;
+using MediatR;
 
 namespace CarJotter.Api.Controllers;
 
@@ -13,42 +15,61 @@ public class CarController : ControllerBase
 {
     private readonly ILogger<CarController> _logger;
     private readonly ICarRepository _carRepository;
+    private readonly IMediator _mediator;
 
-    public CarController(ILogger<CarController> logger, ICarRepository carRepository)
+    public CarController(
+        ILogger<CarController> logger, 
+        ICarRepository carRepository,
+        IMediator mediator)
     {
         _logger = logger;
         _carRepository = carRepository;
+        _mediator = mediator;
     }
 
     [HttpGet(Name = "GetCars")]
     public ActionResult<IList<CarDTO>> GetAll()
     {
-        var cars = _carRepository.GetAll();
+        var cars = _mediator.Send(new CarGetAllQuery());
         if (cars == null)
         {
             return NotFound();
         }
+        return Ok(cars.Result);
+    }
 
-        return Ok(cars.Select(car => new CarDTO
+    [HttpGet("{Id}", Name = "GetCarById")]
+    public ActionResult<CarDTO> GetById([FromRoute] CarGetByIdQuery query)
+    {
+        var car = _mediator.Send(query);
+        if (car == null)
         {
-            Id = car.Id,
-            Brand = car.Brand,
-            Model = car.Model,
-            Year = car.Year,
-        }).ToList());
+            return NotFound();
+        }
+        return Ok(car.Result);
     }
 
     [HttpPost(Name = "AddCar")]
-    public ActionResult<CarDTO> Add(CarCreateCommand command)
+    public ActionResult<CarDTO> Add([FromBody] CarCreateCommand command)
     {
-        var car = new CarEntity
-        {
-            Brand = command.Brand,
-            Model = command.Model,
-            Year = command.Year,
-            LicensePlate = command.LicensePlate,
-        };
-        _carRepository.Add(car);
+        var car = _mediator.Send(command);
+
         return CreatedAtRoute("GetCars", new { id = car.Id }, car);
+    }
+
+    [HttpPut(Name = "UpdateCar")]
+    public ActionResult<CarDTO> Update([FromBody] CarUpdateCommand command)
+    {
+        var car = _mediator.Send(command);
+
+        return CreatedAtRoute("GetCars", new { id = car.Id }, car);
+    }
+
+    [HttpDelete("{Id}", Name = "DeleteCar")]
+    public void Delete([FromRoute] CarDeleteCommand command)
+    {
+        _mediator.Send(command);
+
+        return;
     }
 }

@@ -16,9 +16,8 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         _context.SaveChanges();
     }
 
-    public void Delete(int id)
+    public void Delete(T entity)
     {
-        var entity = _context.Set<T>().Find(id);
         _context.Set<T>().Remove(entity);
         _context.SaveChanges();
     }
