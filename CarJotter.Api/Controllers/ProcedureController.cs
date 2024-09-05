@@ -38,16 +38,16 @@ public class ProcedureController : ControllerBase
         return Ok(cars.Result);
     }
 
-    // [HttpGet("{Id}", Name = "GetCarById")]
-    // public ActionResult<CarDTO> GetById([FromRoute] CarGetByIdQuery query)
-    // {
-    //     var car = _mediator.Send(query);
-    //     if (car == null)
-    //     {
-    //         return NotFound();
-    //     }
-    //     return Ok(car.Result);
-    // }
+    [HttpGet("{Id}", Name = "GetProcedureById")]
+    public ActionResult<ProcedureDTO> GetById([FromRoute] ProcedureGetByIdQuery query)
+    {
+        var car = _mediator.Send(query);
+        if (car == null)
+        {
+            return NotFound();
+        }
+        return Ok(car.Result);
+    }
 
     // [HttpPost(Name = "AddCar")]
     // public ActionResult<CarDTO> Add([FromBody] CarCreateCommand command)
